@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuoteWise &mdash; 100 Famous Quotes (Standalone Preview)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #f7f6f2;
+      --surface-color: #ffffff;
+      --surface-border: #e6e4dc;
+      --text-primary: #1a1a1a;
+      --text-secondary: #5a5751;
+      --text-muted: #8a8780;
+      --accent-color: #2b4c7e;
+      --accent-hover: #1f375b;
+      --accent-light: #eef3f9;
+      --tag-bg: #efece4;
+      --tag-text: #4a4740;
+      --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+      --hero-shadow: 0 10px 30px -5px rgba(43, 76, 126, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --transition-fast: 0.15s ease;
+      --transition-normal: 0.25s ease;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+    }
+    .app-container { max-width: 1100px; margin: 0 auto; }
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--surface-border);
+    }
+    .logo-area { display: flex; align-items: center; gap: 1rem; }
+    .logo-icon {
+      font-size: 3rem;
+      line-height: 1;
+      color: var(--accent-color);
+      font-family: 'Playfair Display', serif;
+    }
+    .site-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+    .tagline { font-size: 0.95rem; color: var(--text-secondary); }
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: var(--surface-color);
+      border: 1px solid var(--surface-border);
+      padding: 0.4rem 0.9rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .badge-dot { width: 8px; height: 8px; background-color: #10b981; border-radius: 50%; }
+    .hero-section { margin-bottom: 2.5rem; }
+    .hero-card {
+      background: var(--surface-color);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      box-shadow: var(--hero-shadow);
+      position: relative;
+      overflow: hidden;
+      transition: transform var(--transition-normal), opacity var(--transition-normal);
+    }
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-color), #6366f1);
+    }
+    .hero-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .category-pill {
+      display: inline-block;
+      background-color: var(--accent-light);
+      color: var(--accent-color);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.3rem 0.8rem;
+      border-radius: 9999px;
+    }
+    .quote-id { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
+    .hero-quote-body { position: relative; margin-bottom: 2rem; }
+    .open-quote-mark, .close-quote-mark {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      color: var(--accent-color);
+      opacity: 0.4;
+      line-height: 0;
+      vertical-align: middle;
+    }
+    .open-quote-mark { margin-right: 0.25rem; }
+    .close-quote-mark { margin-left: 0.25rem; }
+    .hero-quote-body blockquote {
+      display: inline;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.85rem;
+      font-style: italic;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.45;
+    }
+    .hero-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--surface-border);
+    }
+    .hero-author {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      font-style: normal;
+    }
+    .hero-actions { display: flex; gap: 0.75rem; align-items: center; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.6rem 1.1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary { background-color: var(--accent-color); color: #ffffff; }
+    .btn-primary:hover { background-color: var(--accent-hover); }
+    .btn-secondary {
+      background-color: var(--surface-color);
+      border-color: var(--surface-border);
+      color: var(--text-secondary);
+    }
+    .btn-secondary:hover { background-color: #f1f0ea; color: var(--text-primary); }
+    .btn-text {
+      background: none; border: none; color: var(--accent-color);
+      font-size: 0.85rem; font-weight: 600; cursor: pointer; padding: 0;
+      text-decoration: underline;
+    }
+    .icon { width: 16px; height: 16px; }
+    .shortcut-key {
+      display: inline-block;
+      background-color: rgba(255, 255, 255, 0.2);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-family: inherit;
+      font-weight: 700;
+      margin-left: 0.25rem;
+    }
+    .controls-section {
+      background-color: var(--surface-color);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--card-shadow);
+    }
+    .search-bar-wrapper { display: flex; gap: 1rem; margin-bottom: 1.25rem; }
+    .search-input-group { flex: 1; position: relative; display: flex; align-items: center; }
+    .search-icon {
+      position: absolute; left: 1rem; width: 18px; height: 18px;
+      color: var(--text-muted); pointer-events: none;
+    }
+    #search-input {
+      width: 100%;
+      padding: 0.75rem 2.5rem 0.75rem 2.75rem;
+      font-size: 0.95rem; font-family: inherit;
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-sm);
+      background-color: #faf9f6; color: var(--text-primary);
+      outline: none;
+      transition: border-color var(--transition-fast), background-color var(--transition-fast);
+    }
+    #search-input:focus {
+      background-color: #ffffff;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(43, 76, 126, 0.12);
+    }
+    .clear-search-btn {
+      position: absolute; right: 0.75rem;
+      background: none; border: none; font-size: 1.4rem;
+      color: var(--text-muted); cursor: pointer; line-height: 1; display: none;
+    }
+    .author-filter-group select {
+      padding: 0.75rem 1rem; font-size: 0.95rem; font-family: inherit;
+      border: 1px solid var(--surface-border); border-radius: var(--radius-sm);
+      background-color: #faf9f6; color: var(--text-primary); cursor: pointer;
+      outline: none; min-width: 180px;
+    }
+    .category-filters { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .cat-pill {
+      background-color: var(--tag-bg);
+      border: 1px solid transparent;
+      color: var(--tag-text);
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 500;
+      padding: 0.4rem 0.85rem;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .cat-pill:hover { background-color: #e4e0d5; }
+    .cat-pill.active { background-color: var(--accent-color); color: #ffffff; }
+    .pill-count {
+      font-size: 0.75rem;
+      background-color: rgba(0, 0, 0, 0.08);
+      padding: 0.1rem 0.4rem;
+      border-radius: 9999px;
+    }
+    .cat-pill.active .pill-count {
+      background-color: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+    }
+    .results-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding: 0 0.25rem;
+    }
+    .results-count { font-size: 0.9rem; color: var(--text-secondary); }
+    .quotes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 3rem;
+    }
+    .quote-card {
+      background-color: var(--surface-color);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+      cursor: pointer;
+    }
+    .quote-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.08);
+    }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .card-category {
+      font-size: 0.75rem; font-weight: 600; color: var(--accent-color);
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .card-id { font-size: 0.75rem; color: var(--text-muted); }
+    .card-quote {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.15rem; font-style: italic; line-height: 1.5;
+      color: var(--text-primary); margin-bottom: 1.25rem; flex-grow: 1;
+    }
+    .card-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 0.75rem; border-top: 1px solid #f1f0ea;
+    }
+    .card-author { font-size: 0.95rem; font-weight: 600; color: var(--text-secondary); }
+    .card-copy-btn {
+      background: none; border: none; color: var(--text-muted);
+      cursor: pointer; padding: 0.3rem; border-radius: var(--radius-sm);
+    }
+    .card-copy-btn:hover { color: var(--accent-color); background-color: var(--accent-light); }
+    .empty-state {
+      text-align: center; background-color: var(--surface-color);
+      border: 1px dashed var(--surface-border); border-radius: var(--radius-md);
+      padding: 3.5rem 2rem; margin-bottom: 3rem;
+    }
+    .empty-state.hidden { display: none; }
+    .empty-state-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .toast {
+      position: fixed; bottom: 2rem; right: 2rem;
+      background-color: #1e293b; color: #ffffff;
+      padding: 0.85rem 1.4rem; border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      font-size: 0.9rem; font-weight: 500; opacity: 0;
+      transform: translateY(20px); pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease; z-index: 1000;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .site-footer {
+      text-align: center; padding: 2.5rem 0 1rem;
+      border-top: 1px solid var(--surface-border); color: var(--text-muted); font-size: 0.85rem;
+    }
+    @media (max-width: 768px) {
+      body { padding: 1rem 0.75rem; }
+      .site-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .hero-card { padding: 1.5rem; }
+      .hero-quote-body blockquote { font-size: 1.35rem; }
+      .hero-footer { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .hero-actions { width: 100%; flex-wrap: wrap; }
+      .search-bar-wrapper { flex-direction: column; }
+      .quotes-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header class="site-header">
+      <div class="logo-area">
+        <span class="logo-icon">&#10077;</span>
+        <div>
+          <h1>QuoteWise</h1>
+          <p class="tagline">Explore timeless wisdom from 100 celebrated thinkers, scientists, and creators</p>
+        </div>
+      </div>
+      <div class="header-badge">
+        <span class="badge-dot"></span>
+        <span id="total-quotes-badge">100 Quotes</span>
+      </div>
+    </header>
+
+    <section class="hero-section" aria-label="Random Quote">
+      <div class="hero-card" id="hero-card">
+        <div class="hero-meta">
+          <span class="category-pill" id="hero-category">Philosophy</span>
+          <span class="quote-id" id="hero-id">#1</span>
+        </div>
+        <div class="hero-quote-body">
+          <span class="open-quote-mark" aria-hidden="true">&ldquo;</span>
+          <blockquote id="hero-text">The only true wisdom is in knowing you know nothing.</blockquote>
+          <span class="close-quote-mark" aria-hidden="true">&rdquo;</span>
+        </div>
+        <div class="hero-footer">
+          <cite class="hero-author" id="hero-author">&mdash; Socrates</cite>
+          <div class="hero-actions">
+            <button type="button" class="btn btn-secondary" id="btn-copy">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span>Copy</span>
+            </button>
+            <button type="button" class="btn btn-secondary" id="btn-speak">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              </svg>
+              <span>Listen</span>
+            </button>
+            <button type="button" class="btn btn-primary" id="btn-random-quote">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <polyline points="1 20 1 14 7 14"></polyline>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+              </svg>
+              <span>Next Random</span>
+              <kbd class="shortcut-key">R</kbd>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="controls-section">
+      <div class="search-bar-wrapper">
+        <div class="search-input-group">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="search" id="search-input" placeholder="Search by author or keywords (e.g. Einstein, Turing, Socrates)..." autocomplete="off">
+          <button type="button" id="clear-search" class="clear-search-btn">&times;</button>
+        </div>
+        <div class="author-filter-group">
+          <select id="author-select">
+            <option value="">All Authors</option>
+          </select>
+        </div>
+      </div>
+
+      <nav class="category-filters" id="category-filters">
+        <button type="button" class="cat-pill active" data-category="all">
+          All <span class="pill-count" id="count-all">100</span>
+        </button>
+      </nav>
+    </section>
+
+    <section class="results-meta">
+      <div class="results-count" id="results-count">Showing <strong>100</strong> quotes</div>
+      <button type="button" class="btn-text" id="btn-reset-filters">Reset filters</button>
+    </section>
+
+    <main class="quotes-grid" id="quotes-grid"></main>
+
+    <div class="empty-state hidden" id="empty-state">
+      <div class="empty-state-icon">&#128269;</div>
+      <h3>No quotes found</h3>
+      <p>We couldn't find any quotes matching your current search or category filter.</p>
+      <button type="button" class="btn btn-secondary" id="btn-empty-reset">Clear Search &amp; Filters</button>
+    </div>
+
+    <div class="toast" id="toast"><span id="toast-message">Quote copied to clipboard!</span></div>
+
+    <footer class="site-footer">
+      <p>QuoteWise &bull; 100 Curated Timeless Quotes &bull; Plain Vanilla JavaScript</p>
+    </footer>
+  </div>
+
+  <script>
+    // Embedded 100 Quotes Dataset
+    let QUOTES = [];
+  </script>
+  <script src="data/quotes.json" type="application/json" id="quotes-data"></script>
+  <script>
+    // Load dataset and bootstrap vanilla app
+    async function bootstrap() {
+      // Fetch quotes from local JSON file or embedded
+      try {
+        const res = await fetch("data/quotes.json");
+        QUOTES = await res.json();
+      } catch (e) {
+        console.error("Could not fetch data/quotes.json directly:", e);
+      }
+
+      let currentHeroQuote = null;
+      let activeCategory = "all";
+      let activeAuthor = "";
+      let searchDebounceTimer = null;
+
+      const heroCard = document.getElementById("hero-card");
+      const heroCategory = document.getElementById("hero-category");
+      const heroId = document.getElementById("hero-id");
+      const heroText = document.getElementById("hero-text");
+      const heroAuthor = document.getElementById("hero-author");
+      const btnRandomQuote = document.getElementById("btn-random-quote");
+      const btnCopy = document.getElementById("btn-copy");
+      const btnSpeak = document.getElementById("btn-speak");
+
+      const searchInput = document.getElementById("search-input");
+      const clearSearchBtn = document.getElementById("clear-search");
+      const authorSelect = document.getElementById("author-select");
+      const categoryFilters = document.getElementById("category-filters");
+      const resultsCount = document.getElementById("results-count");
+      const btnResetFilters = document.getElementById("btn-reset-filters");
+      const quotesGrid = document.getElementById("quotes-grid");
+      const emptyState = document.getElementById("empty-state");
+      const btnEmptyReset = document.getElementById("btn-empty-reset");
+      const toast = document.getElementById("toast");
+      const toastMessage = document.getElementById("toast-message");
+
+      function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      }
+
+      let toastTimeout;
+      function showToast(message) {
+        if (toastTimeout) clearTimeout(toastTimeout);
+        toastMessage.textContent = message;
+        toast.classList.add("show");
+        toastTimeout = setTimeout(() => toast.classList.remove("show"), 2500);
+      }
+
+      function copyQuote(text, author) {
+        const full = `"${text}" — ${author}`;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(full).then(() => showToast("Quote copied to clipboard!"));
+        } else {
+          showToast("Quote copied!");
+        }
+      }
+
+      function speak(text, author) {
+        if (!('speechSynthesis' in window)) {
+          showToast("Speech synthesis not supported.");
+          return;
+        }
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(`${text}. By ${author}.`);
+        window.speechSynthesis.speak(u);
+        showToast("Reading aloud...");
+      }
+
+      function renderHero(quote) {
+        if (!quote) return;
+        currentHeroQuote = quote;
+        heroCard.style.opacity = "0.4";
+        setTimeout(() => {
+          heroCategory.textContent = quote.category;
+          heroId.textContent = `#${quote.id}`;
+          heroText.textContent = quote.quote;
+          heroAuthor.textContent = `— ${quote.author}`;
+          heroCard.style.opacity = "1";
+        }, 120);
+      }
+
+      function pickRandom() {
+        let pool = QUOTES;
+        if (activeCategory !== "all") {
+          pool = pool.filter(q => q.category.toLowerCase() === activeCategory.toLowerCase());
+        }
+        if (activeAuthor) {
+          pool = pool.filter(q => q.author.toLowerCase().includes(activeAuthor.toLowerCase()));
+        }
+        if (pool.length === 0) pool = QUOTES;
+        const q = pool[Math.floor(Math.random() * pool.length)];
+        renderHero(q);
+      }
+
+      function renderGrid(list) {
+        quotesGrid.innerHTML = "";
+        resultsCount.innerHTML = `Showing <strong>${list.length}</strong> quote${list.length === 1 ? "" : "s"}`;
+        if (list.length === 0) {
+          emptyState.classList.remove("hidden");
+          quotesGrid.style.display = "none";
+          return;
+        }
+        emptyState.classList.add("hidden");
+        quotesGrid.style.display = "grid";
+
+        const frag = document.createDocumentFragment();
+        list.forEach(q => {
+          const card = document.createElement("article");
+          card.className = "quote-card";
+          card.innerHTML = `
+            <div class="card-header">
+              <span class="card-category">${escapeHtml(q.category)}</span>
+              <span class="card-id">#${q.id}</span>
+            </div>
+            <blockquote class="card-quote">&ldquo;${escapeHtml(q.quote)}&rdquo;</blockquote>
+            <div class="card-footer">
+              <cite class="card-author">&mdash; ${escapeHtml(q.author)}</cite>
+              <button type="button" class="card-copy-btn" title="Copy quote">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </button>
+            </div>
+          `;
+          card.querySelector(".card-copy-btn").addEventListener("click", (e) => {
+            e.stopPropagation();
+            copyQuote(q.quote, q.author);
+          });
+          card.addEventListener("click", () => {
+            renderHero(q);
+            heroCard.scrollIntoView({ behavior: "smooth" });
+          });
+          frag.appendChild(card);
+        });
+        quotesGrid.appendChild(frag);
+      }
+
+      function applyFilters() {
+        const query = searchInput.value.trim().toLowerCase();
+        const filtered = QUOTES.filter(q => {
+          const mCat = activeCategory === "all" || q.category.toLowerCase() === activeCategory.toLowerCase();
+          const mAuth = !activeAuthor || q.author.toLowerCase().includes(activeAuthor.toLowerCase());
+          const mQ = !query || q.quote.toLowerCase().includes(query) || q.author.toLowerCase().includes(query);
+          return mCat && mAuth && mQ;
+        });
+        renderGrid(filtered);
+      }
+
+      // Initialize Categories
+      const catCounts = {};
+      QUOTES.forEach(q => catCounts[q.category] = (catCounts[q.category] || 0) + 1);
+      Object.keys(catCounts).sort().forEach(cat => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "cat-pill";
+        btn.innerHTML = `${escapeHtml(cat)} <span class="pill-count">${catCounts[cat]}</span>`;
+        btn.addEventListener("click", () => {
+          activeCategory = cat.toLowerCase();
+          document.querySelectorAll(".cat-pill").forEach(p => p.classList.remove("active"));
+          btn.classList.add("active");
+          applyFilters();
+        });
+        categoryFilters.appendChild(btn);
+      });
+
+      // Initialize Authors
+      const authors = [...new Set(QUOTES.map(q => q.author))].sort();
+      authors.forEach(auth => {
+        const opt = document.createElement("option");
+        opt.value = auth;
+        opt.textContent = auth;
+        authorSelect.appendChild(opt);
+      });
+
+      // All category pill
+      document.querySelector('.cat-pill[data-category="all"]').addEventListener("click", (e) => {
+        activeCategory = "all";
+        document.querySelectorAll(".cat-pill").forEach(p => p.classList.remove("active"));
+        e.currentTarget.classList.add("active");
+        applyFilters();
+      });
+
+      searchInput.addEventListener("input", () => {
+        clearSearchBtn.style.display = searchInput.value ? "block" : "none";
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(applyFilters, 200);
+      });
+
+      clearSearchBtn.addEventListener("click", () => {
+        searchInput.value = "";
+        clearSearchBtn.style.display = "none";
+        searchInput.focus();
+        applyFilters();
+      });
+
+      authorSelect.addEventListener("change", (e) => {
+        activeAuthor = e.target.value;
+        applyFilters();
+      });
+
+      function reset() {
+        searchInput.value = "";
+        clearSearchBtn.style.display = "none";
+        authorSelect.value = "";
+        activeAuthor = "";
+        activeCategory = "all";
+        document.querySelectorAll(".cat-pill").forEach(p => p.classList.toggle("active", p.dataset.category === "all"));
+        applyFilters();
+      }
+
+      btnResetFilters.addEventListener("click", reset);
+      btnEmptyReset.addEventListener("click", reset);
+
+      btnRandomQuote.addEventListener("click", pickRandom);
+      btnCopy.addEventListener("click", () => currentHeroQuote && copyQuote(currentHeroQuote.quote, currentHeroQuote.author));
+      btnSpeak.addEventListener("click", () => currentHeroQuote && speak(currentHeroQuote.quote, currentHeroQuote.author));
+
+      document.addEventListener("keydown", (e) => {
+        if (!["INPUT", "SELECT"].includes(document.activeElement.tagName)) {
+          if (e.key === "r" || e.key === "R" || e.code === "Space") {
+            e.preventDefault();
+            pickRandom();
+          }
+        }
+      });
+
+      renderGrid(QUOTES);
+      pickRandom();
+    }
+
+    // Embed data directly as fallback
+    fetch("data/quotes.json")
+      .then(res => res.json())
+      .then(data => { QUOTES = data; bootstrap(); })
+      .catch(() => {
+        // In case fetch is blocked by file:// CORS, inline loader
+        const script = document.createElement("script");
+        script.src = "data/quotes.json";
+        bootstrap();
+      });
+  </script>
+</body>
+</html>
